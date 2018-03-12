@@ -1,13 +1,19 @@
 #Import
+from src import Timelapser
 import argparse
 import picamera
 import time
+from datetime import datetime
+import os
 
 #Parse Arguements
 parser = argparse.ArgumentParser(description='Take timelapse images. Should be run as a background thread.')
-parser.add_argument('integers', metavar='m', type=int, nargs='+', default=60,
+parser.add_argument('integers', metavar='m', type=int, nargs='+', default=1,
                     help='Number of minutes between each snapshot')
 
+
+
+args = parser.parse_args()
 
 
 #Camera Setup
@@ -29,12 +35,17 @@ camera.hflip = False
 camera.vflip = False
 camera.crop = (0.0, 0.0, 1.0, 1.0)
 
-args = parser.parse_args()
 
-#min = h*60
-min = 1
-i = 0
+dir='timelapse_results'
+
+if not os.path.exists(dir):
+    os.makedirs(dir)
+
+min=m*60
+
 while True:
-    i = i +1
-    camera.capture('image'+str(i)+'.jpg')
+    file = datetime.now().strftime("%m-%d_%H:%M:S")+'.jpg'
+    camera.capture(file)
     time.sleep(min)
+
+
